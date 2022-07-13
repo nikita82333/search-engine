@@ -1,5 +1,0 @@
-C:/Users/kunv/CLionProjects/search_engine/cmake-build-debug/CMakeFiles/search_engine.dir
-C:/Users/kunv/CLionProjects/search_engine/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/kunv/CLionProjects/search_engine/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-C:/Users/kunv/CLionProjects/search_engine/cmake-build-debug/_deps/json-build/CMakeFiles/edit_cache.dir
-C:/Users/kunv/CLionProjects/search_engine/cmake-build-debug/_deps/json-build/CMakeFiles/rebuild_cache.dir
