@@ -10,7 +10,10 @@ private:
     int _responsesLimit = 5;
     std::string _programName;
     std::string _configFileVersion;
+    size_t _baseUpdateInterval = 30;
     bool _configIsLoaded = false;
+
+    std::string _lastMissingFiles;
 
     void LoadConfig();
     static void NormalizeFileNames(std::vector<std::string>& fileNames);
@@ -55,7 +58,13 @@ public:
 * @return возвращает версию файла config.json
 */
     std::string GetConfigFileVersion();
-};
 
+/**
+* Метод получает интервал оюновления базы из файла config.json
+* @return возвращает интервал оюновления базы
+*/
+    size_t GetBaseUpdateInterval();
+
+};
 
 #endif //SEARCH_ENGINE_CONVERTERJSON_H

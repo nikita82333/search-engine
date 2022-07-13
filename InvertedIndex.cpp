@@ -8,6 +8,7 @@
 
 void InvertedIndex::UpdateDocumentBase(const std::vector<std::string>& inputDocs) {
     _docs = inputDocs;
+    _freqDictionary.clear();
     std::mutex freqDictionaryAccess;
     std::vector<std::thread> threads;
     size_t docId = 0;

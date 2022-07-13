@@ -6,7 +6,7 @@
 #include <exception>
 #include "nlohmann/json.hpp"
 #include "ConverterJSON.h"
-#include "CustomExceptions.h"
+#include "CustomExceptions.hpp"
 
 void ConverterJSON::NormalizeFileNames(std::vector<std::string>& fileNames) {
     for (auto& fileName : fileNames) {
@@ -35,20 +35,23 @@ void ConverterJSON::LoadConfig() {
             if (configJson["config"].contains("max_responses")) {
                 _responsesLimit = configJson["config"]["max_responses"];
             }
+            if (configJson["config"].contains("base_update_interval_sec")) {
+                _baseUpdateInterval = configJson["config"]["base_update_interval_sec"];
+            }
             try {
-                _fileNames = configJson["files"];
+                configJson.at("files").get_to(_fileNames);
                 _programName = configJson["config"]["name"];
                 _configFileVersion = configJson["config"]["version"];
                 _configIsLoaded = true;
             } catch (...) {
-                throw ConfigFileIncorrect();
+                throw ConfigFileIncorrectException();
             }
             NormalizeFileNames(_fileNames);
         } else {
-            throw ConfigFileEmpty();
+            throw ConfigFileEmptyException();
         }
     } else {
-        throw ConfigFileMissing();
+        throw ConfigFileMissingException();
     }
 }
 
@@ -64,6 +67,7 @@ std::string ConverterJSON::IndexToString(size_t index) {
 std::vector<std::string> ConverterJSON::GetTextDocuments() {
     if (!_configIsLoaded) LoadConfig();
     std::vector<std::string> textDocs;
+    std::string missingFiles;
     for (const auto& fileName : _fileNames) {
         std::ifstream textFile(fileName);
         if (textFile.is_open()) {
@@ -77,10 +81,13 @@ std::vector<std::string> ConverterJSON::GetTextDocuments() {
             textDocs.emplace_back(text);
             textFile.close();
         } else {
-            std::cerr << "Warning: File \"" << fileName << "\" is missing!" << std::endl;
+            missingFiles += "\'" + fileName + "\' ";
         }
     }
-
+    if (!missingFiles.empty() && missingFiles != _lastMissingFiles) {
+        std::clog << "Warning: File(s) " << missingFiles << "is missing!" << std::endl;
+    }
+    _lastMissingFiles = missingFiles;
     return textDocs;
 }
 
@@ -95,10 +102,10 @@ std::vector<std::string> ConverterJSON::GetRequests() {
     if (requestsFile.is_open()) {
         nlohmann::json requestsJson;
         requestsFile >> requestsJson;
-        requests = requestsJson["requests"];
+        requestsJson.at("requests").get_to(requests);
         requestsFile.close();
     } else {
-        throw FileMissing("requests.json");
+        throw FileMissingException("requests.json");
     }
     return requests;
 }
@@ -107,9 +114,9 @@ void ConverterJSON::PutAnswers(const std::vector<std::vector<std::pair<int, floa
     std::ofstream answersFile("answers.json");
     if (answersFile.is_open()) {
         nlohmann::json answersJson;
-        size_t requestNumber = 1;
+        size_t iRequest = 1;
         for (const auto& answer : answers) {
-            std::string requestString = "request" + IndexToString(requestNumber);
+            std::string requestString = "request" + IndexToString(iRequest);
             answersJson["answers"][requestString];
             if (!answer.empty()) {
                 answersJson["answers"][requestString]["result"] = "true";
@@ -117,22 +124,22 @@ void ConverterJSON::PutAnswers(const std::vector<std::vector<std::pair<int, floa
                     answersJson["answers"][requestString]["docid"] = answer[0].first;
                     answersJson["answers"][requestString]["rank"] = answer[0].second;
                 } else {
-                    size_t docNumber = 0;
+                    size_t iDoc = 0;
                     for (const auto& [docId, rank]: answer) {
-                        answersJson["answers"][requestString]["relevance"][docNumber]["docid"] = docId;
-                        answersJson["answers"][requestString]["relevance"][docNumber]["rank"] = rank;
-                        ++docNumber;
+                        answersJson["answers"][requestString]["relevance"][iDoc]["docid"] = docId;
+                        answersJson["answers"][requestString]["relevance"][iDoc]["rank"] = rank;
+                        ++iDoc;
                     }
                 }
             } else {
                 answersJson["answers"][requestString]["result"] = "false";
             }
-            ++requestNumber;
+            ++iRequest;
         }
         answersFile << std::setw(2) << answersJson;
         answersFile.close();
     } else {
-        throw FileBusy("answers.json");
+        throw FileBusyException("answers.json");
     }
 }
 
@@ -144,4 +151,9 @@ std::string ConverterJSON::GetProgramName() {
 std::string ConverterJSON::GetConfigFileVersion() {
     if (!_configIsLoaded) LoadConfig();
     return _configFileVersion;
+}
+
+size_t ConverterJSON::GetBaseUpdateInterval() {
+    if (!_configIsLoaded) LoadConfig();
+    return _baseUpdateInterval;
 }

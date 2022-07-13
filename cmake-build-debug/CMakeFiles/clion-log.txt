@@ -1,6 +1,5 @@
 "C:\Program Files\JetBrains\CLion 2022.1.2\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2022.1.2/bin/ninja/win/ninja.exe" -G Ninja -S C:\Users\kunv\CLionProjects\search_engine -B C:\Users\kunv\CLionProjects\search_engine\cmake-build-debug
--- Using the single-header code from C:/Users/kunv/CLionProjects/search_engine/nlohmann_json/single_include/
--- Could NOT find Python (missing: Python_EXECUTABLE Interpreter) 
+-- Using the single-header code from C:/Users/kunv/CLionProjects/search_engine/cmake-build-debug/_deps/json-src/single_include/
 -- Configuring done
 -- Generating done
 -- Build files have been written to: C:/Users/kunv/CLionProjects/search_engine/cmake-build-debug
