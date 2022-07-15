@@ -20,7 +20,7 @@ int main() {
     try {
         converterJson.GetProgramName();
     } catch (const std::exception& exception) {
-        std::clog << exception.what() << std::endl;
+        std::cerr << exception.what() << std::endl;
         return -1;
     }
 
@@ -28,7 +28,7 @@ int main() {
               << programVersion << " ..." << std::endl << std::endl;
 
     if (programVersion != converterJson.GetConfigFileVersion()) {
-        std::clog << "Warning: \"Config.json\" has incorrect file version!" << std::endl;
+        std::cerr << "Warning: \"Config.json\" has incorrect file version!" << std::endl;
     }
 
     std::vector<std::string> textDocs;
@@ -71,7 +71,7 @@ int main() {
                 try {
                     requests = converterJson.GetRequests();
                 } catch (const FileMissingException& exception) {
-                    std::clog << exception.what() << std::endl;
+                    std::cerr << exception.what() << std::endl;
                 }
             } else {
                 std::cout << "Please enter your request:" << std::endl;
@@ -95,14 +95,14 @@ int main() {
                 converterJson.PutAnswers(answers);
                 std::cout << "Done! See search results in the file \"answers.json\"." << std::endl;
             } catch (const FileBusyException& exception) {
-                std::clog << exception.what() << std::endl;
+                std::cerr << exception.what() << std::endl;
             }
 
         } else if (userInput == "3") {
             exitFlag.store(true);
             exitConditionVariable.notify_one();
         } else {
-            std::clog << "No such command!" << std::endl;
+            std::cerr << "No such command!" << std::endl;
         }
     }
 

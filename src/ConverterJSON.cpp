@@ -85,7 +85,7 @@ std::vector<std::string> ConverterJSON::GetTextDocuments() {
         }
     }
     if (!missingFiles.empty() && missingFiles != _lastMissingFiles) {
-        std::clog << "Warning: File(s) " << missingFiles << "is missing!" << std::endl;
+        std::cerr << "Warning: File(s) " << missingFiles << "is missing!" << std::endl;
     }
     _lastMissingFiles = missingFiles;
     return textDocs;
