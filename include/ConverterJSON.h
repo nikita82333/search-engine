@@ -7,7 +7,7 @@
 class ConverterJSON {
 private:
     std::vector<std::string> _fileNames;
-    int _responsesLimit = 5;
+    size_t _responsesLimit = 5;
     std::string _programName;
     std::string _configFileVersion;
     size_t _baseUpdateInterval = 30;

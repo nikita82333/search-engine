@@ -24,9 +24,9 @@ std::vector<std::vector<RelativeIndex>> SearchServer::Search(const std::vector<s
             for (const auto& [docId, count] : _index.GetWordCount(word)) {
                 if (count != 0) {
                     if (docWordsCount.count(docId) == 0) {
-                        docWordsCount[docId] = std::vector{std::make_pair(word, count)};
+                        docWordsCount[docId] = std::vector{std::pair{word, count}};
                     } else {
-                        docWordsCount[docId].emplace_back(std::make_pair(word, count));
+                        docWordsCount[docId].emplace_back(std::pair{word, count});
                     }
                 }
             }

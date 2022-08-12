@@ -65,7 +65,6 @@ int main() {
             invertedIndexAccess.lock();
             SearchServer searchServer(invertedIndex);
             invertedIndexAccess.unlock();
-            std::vector<std::vector<RelativeIndex>> relativeIndex;
             std::vector<std::string> requests;
             if (userInput == "1") {
                 try {
@@ -81,7 +80,10 @@ int main() {
                 requests.emplace_back(request);
             }
 
+            std::vector<std::vector<RelativeIndex>> relativeIndex;
+            invertedIndexAccess.lock();
             relativeIndex = searchServer.Search(requests);
+            invertedIndexAccess.unlock();
             std::vector<std::vector<std::pair<int, float>>> answers;
             for (const auto& answer : relativeIndex) {
                 std::vector<std::pair<int, float>> docs;
